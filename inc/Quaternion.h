@@ -6,6 +6,7 @@
 
 const int PRECISION = 10;
 const int MATRIX_SIZE = 3;
+const int COEFFICIENTS_NUMBERS = 4;
 
 class Quaternion {
 private:
@@ -22,24 +23,15 @@ public:
     friend std::ostream & operator<<(std::ostream & ost, const Quaternion &qua);
     Quaternion operator+(const Quaternion & q);
     Quaternion operator*(const Quaternion & q);
+    bool operator==(const Quaternion & q) const;
     void conjugate();
     Quaternion getConjugate();
 
-    double getW() const;
-
-    void setW(double w);
-
-    double getX() const;
-
-    void setX(double x);
-
-    double getY() const;
-
-    void setY(double y);
-
-    double getZ() const;
-
-    void setZ(double z);
+    const double operator[](int index) const;
+    double &operator[](int index);
 };
+
+std::ostream &operator<<(std::ostream &ost, const Quaternion & qua);
+std::istream &operator>>(std::istream &ist, Quaternion & qua);
 
 #endif //ROTATIONS3D_QUATERNION_H

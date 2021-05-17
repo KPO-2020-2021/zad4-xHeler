@@ -25,52 +25,20 @@ Matrix<MATRIX_SIZE> Quaternion::getRotationMatrix() {
     double G = 2 * X * Z - 2 * Y * W;
     double H = 2 * Y * Z + 2 * X * W;
     double I = 1 - 2 * X * X - 2 * Y * Y;
-    return Matrix<MATRIX_SIZE>({A,B,C,D,E,F,G,H,I});
-}
-
-double Quaternion::getW() const {
-    return W;
-}
-
-void Quaternion::setW(double w) {
-    W = w;
-}
-
-double Quaternion::getX() const {
-    return X;
-}
-
-void Quaternion::setX(double x) {
-    X = x;
-}
-
-double Quaternion::getY() const {
-    return Y;
-}
-
-void Quaternion::setY(double y) {
-    Y = y;
-}
-
-double Quaternion::getZ() const {
-    return Z;
-}
-
-void Quaternion::setZ(double z) {
-    Z = z;
+    return Matrix<MATRIX_SIZE>({A, B, C, D, E, F, G, H, I});
 }
 
 Quaternion Quaternion::operator+(const Quaternion &v) {
-    return Quaternion(getW() + v.getW(), getX() + v.getX(), getY() + v.getY(), getZ() + v.getZ());
+    return Quaternion(W + v[0], X + v[1], Y + v[2], Z + v[3]);
 }
 
 std::ostream &operator<<(std::ostream &ost, const Quaternion &qua) {
     std::cout << std::fixed;
     std::cout << std::setprecision(PRECISION);
-    ost << qua.getW() << ",";
-    ost << qua.getX() << ",";
-    ost << qua.getY() << ",";
-    ost << qua.getZ();
+    ost << qua[0] << ",";
+    ost << qua[1] << ",";
+    ost << qua[2] << ",";
+    ost << qua[3];
 
     return ost;
 }
@@ -92,6 +60,42 @@ Quaternion Quaternion::getConjugate() {
     Quaternion tmp(W, X, Y, Z);
     tmp.conjugate();
     return tmp;
+}
+
+double &Quaternion::operator[](int index) {
+    if (index >= COEFFICIENTS_NUMBERS || index < 0) throw std::invalid_argument("Index out of range!");
+    switch (index) {
+        case 0:
+            return W;
+        case 1:
+            return X;
+        case 2:
+            return Y;
+        case 3:
+            return Z;
+        default:
+            throw std::exception();
+    }
+}
+
+const double Quaternion::operator[](int index) const {
+    if (index >= COEFFICIENTS_NUMBERS || index < 0) throw std::invalid_argument("Index out of range!");
+    switch (index) {
+        case 0:
+            return W;
+        case 1:
+            return X;
+        case 2:
+            return Y;
+        case 3:
+            return Z;
+        default:
+            throw std::exception();
+    }
+}
+
+bool Quaternion::operator==(const Quaternion &q) const {
+    return (W == q[0] && X == q[1] && Y == q[2] && q[3] == Z);
 }
 
 

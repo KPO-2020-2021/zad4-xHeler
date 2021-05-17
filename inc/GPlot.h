@@ -52,7 +52,7 @@
 #include <unistd.h>
 #include <list>
 #include <iomanip>
-#include "Cuboid.h"
+#include <map>
 
 #endif
 
@@ -70,11 +70,6 @@ const unsigned GNUPLOTPP_PATCH_VERSION = (GNUPLOTPP_VERSION & 0xFF);
  */
 class Gnuplot {
 private:
-    // list of cuboids;
-    std::list<Flat> listOfCuboids;
-    // list of flats;
-    std::list<Flat> listOfFlats;
-
     // Create a name for a temporary file and return it
     std::string tmp_file_name() {
         // Calling "tmpnam" makes GCC emit a warning, but there is no
@@ -99,6 +94,7 @@ private:
     }
 
 public:
+    std::map<std::string, int> listOfObject;
     enum class LineStyle {
         DOTS,
         LINES,
@@ -149,6 +145,7 @@ public:
         for (const auto &fname : files_to_delete) {
             std::remove(fname.c_str());
         }
+
     }
 
     /* This is the most low-level method in the Gnuplot class! It
@@ -372,71 +369,6 @@ public:
             reset();
 
         return result;
-    }
-
-    void addCuboid(Cuboid & cuboid,std::string rgb = "#000000") {
-        for (int i = 0; i < 6; i++) {
-            cuboid[i].setColor(rgb);
-            addFlat(cuboid[i]);
-        }
-    }
-
-    void editCuboid(Cuboid cuboid, int index) {
-        for (int i = 0; i < 6; i++) {
-            editFlat(cuboid[i], (6 * index)+(i+1));
-        }
-    }
-
-    void addFlat(Flat flat) {
-        std::stringstream ss;
-        ss << "from " << flat.getPoint(0) << " to " << flat.getPoint(1) << " to " << flat.getPoint(2)
-            << " to " << flat.getPoint(3) << " to " << flat.getPoint(0);
-        std::stringstream msg;
-        msg << "set object " << listOfFlats.size() + 1 << " polygon " << ss.str()
-            << " fillstyle transparent solid fillcolor rgb \"" << flat.getColor() << "\"";
-
-        listOfFlats.push_back(flat);
-        sendcommand(msg.str());
-    }
-
-    void addHexa() {
-        std::stringstream ss; // xzy
-        ss << "from " << "0,10,0" << " to " << "10,5,0" << " to " << "10, -5, 0"
-           << " to " << "0,-10,0" << " to " << "-10,-5,0" << " to " << "-10,5,0" << " to " << "0,10,0";
-        std::stringstream msg;
-        msg << "set object " << listOfFlats.size() + 1 << " polygon " << ss.str()
-            << " fillstyle transparent solid fillcolor rgb \"" << "#000000"<< "\"";
-
-        sendcommand(msg.str());
-    }
-
-    void addCircle() {
-        std::stringstream ss;
-        ss << std::setprecision(3) << std::fixed;
-        Vector vek(30,0,0);
-        ss << "from 30,0,0 to ";
-        for (int i = 0; i < 360; i++) {
-            vek.rotateByEulerAngles(0, 1,0);
-            ss << vek[0] << "," << vek[2] << "," << vek[1]  << " to ";
-        }
-        ss << "30,0,0";
-        std::stringstream msg;
-        msg << "set object " << listOfFlats.size() + 1 << " polygon " << ss.str()
-            << " fillstyle transparent solid fillcolor rgb \"" << "#000000"<< "\"";
-
-        sendcommand(msg.str());
-    }
-
-    void editFlat(Flat flat, int index) {
-        std::stringstream ss;
-        ss << "from " << flat.getPoint(0) << " to " << flat.getPoint(1) << " to " << flat.getPoint(2)
-           << " to " << flat.getPoint(3) << " to " << flat.getPoint(0);
-        std::stringstream msg;
-        msg << "set object " << index << " polygon " << ss.str()
-            << " fillstyle transparent solid fillcolor rgb \"" << flat.getColor() << "\"";
-
-        listOfFlats.push_back(flat);
-        sendcommand(msg.str());
     }
 
     void initializePlot3D() {

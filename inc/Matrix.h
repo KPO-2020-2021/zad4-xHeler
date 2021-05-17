@@ -11,11 +11,13 @@ const int STANDARD_SIZE = 3;
 template<int SIZE = STANDARD_SIZE>
 class Matrix {
 private:
-    std::array<double, SIZE*SIZE> numbers;
+    std::array<double, SIZE * SIZE> numbers;
 public:
-    Matrix();
+    Matrix() { numbers.fill(0); }
 
-    Matrix(std::array<double, SIZE*SIZE> args) : numbers(args) {};
+    Matrix(int diagonal);
+
+    Matrix(std::array<double, SIZE * SIZE> args) : numbers(args) {};
 
     Matrix operator+(const Matrix &v);
 
@@ -35,7 +37,7 @@ template<int SIZE>
 Matrix<SIZE> Matrix<SIZE>::operator+(const Matrix &v) {
     Matrix<SIZE> result;
     for (int i = 0; i < SIZE; i++) {
-        result[i] = result[i] + v[i];
+        result[i] = numbers[i] + v[i];
     }
     return result;
 }
@@ -44,7 +46,7 @@ template<int SIZE>
 Matrix<SIZE> Matrix<SIZE>::operator-(const Matrix &v) {
     Matrix<SIZE> result;
     for (int i = 0; i < SIZE; i++) {
-        result[i] = result[i] - v[i];
+        result[i] = numbers[i] - v[i];
     }
     return result;
 }
@@ -55,7 +57,7 @@ Matrix<SIZE> Matrix<SIZE>::operator*(const Matrix &v) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             for (int k = 0; k < SIZE; k++) {
-                result[i][j] += numbers[i][k] * v[k][j];
+                result[j + (SIZE * i)]  += numbers[k + (SIZE * i)] * v[j + (SIZE * k)];
             }
         }
     }
@@ -67,28 +69,28 @@ template<class D>
 Matrix<SIZE> Matrix<SIZE>::operator*(const D &v) {
     Matrix<SIZE> result;
     for (int i = 0; i < SIZE; i++) {
-        result[i] = result[i] * v;
+        result[i] = numbers[i] * v;
     }
     return result;
 }
 
 template<int SIZE>
 const double &Matrix<SIZE>::operator[](int index) const {
-    if (index >= SIZE*SIZE || index < 0) throw std::invalid_argument("Index out of range!");
+    if (index >= SIZE * SIZE || index < 0) throw std::invalid_argument("Index out of range!");
     return numbers[index];
 }
 
 template<int SIZE>
 double &Matrix<SIZE>::operator[](int index) {
-    if (index >= SIZE*SIZE || index < 0) throw std::invalid_argument("Index out of range!");
+    if (index >= SIZE * SIZE || index < 0) throw std::invalid_argument("Index out of range!");
     return numbers[index];
 }
 
 template<int SIZE>
-Matrix<SIZE>::Matrix() {
+Matrix<SIZE>::Matrix(int diagonal) {
     numbers.fill(0);
     for (int i = 0; i < SIZE; i++) {
-        numbers[i + (SIZE * i)] = 1;
+        numbers[i + (SIZE * i)] = diagonal;
     }
 }
 
@@ -107,7 +109,7 @@ std::ostream &operator<<(std::ostream &ost, const Matrix<SIZE> &m) {
     for (int i = 0; i < SIZE; i++) {
         ost << "[ ";
         for (int j = 0; j < SIZE; j++) {
-            ost <<  m[j + (SIZE * i)] << " ";
+            ost << m[j + (SIZE * i)] << " ";
         }
         ost << "]" << std::endl;
     }

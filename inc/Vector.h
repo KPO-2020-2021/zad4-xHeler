@@ -14,7 +14,8 @@ class Vector {
 private:
     std::array<double, SIZE> numbers;
 
-    void rotateByQuaternion(Quaternion  & quaternion);
+    void rotateByQuaternion(Quaternion &quaternion);
+
 public:
     Vector<SIZE>() { numbers.fill(0); };
 
@@ -25,9 +26,11 @@ public:
     Vector<SIZE> operator+=(const Vector<SIZE> &v);
 
     Vector<SIZE> operator-(const Vector<SIZE> &v);
+
     Vector<SIZE> operator-=(const Vector<SIZE> &v);
 
     Vector<SIZE> operator*(const Vector<SIZE> &v);
+
     Vector<SIZE> operator*=(const Vector<SIZE> &v);
 
     double operator%(const Vector<SIZE> &v);
@@ -39,6 +42,7 @@ public:
     double getModulo();
 
     void rotateByEulerAngles(double angle_x, double angle_y, double angle_z);
+    void translation(Vector<SIZE> tranlationVector);
 };
 
 template<int SIZE>
@@ -100,7 +104,7 @@ template<int SIZE>
 double Vector<SIZE>::operator%(const Vector<SIZE> &v) {
     double result;
     for (int i = 0; i < SIZE; i++) {
-        result = numbers[i] * v[i];
+        result += numbers[i] * v[i];
     }
     return result;
 }
@@ -113,7 +117,7 @@ const double &Vector<SIZE>::operator[](int index) const {
 
 template<int SIZE>
 double &Vector<SIZE>::operator[](int index) {
-    if (index >= SIZE|| index < 0) throw std::invalid_argument("Index out of range!");
+    if (index >= SIZE || index < 0) throw std::invalid_argument("Index out of range!");
     return numbers[index];
 }
 
@@ -127,7 +131,7 @@ double Vector<SIZE>::getModulo() {
 }
 
 template<int SIZE>
-void Vector<SIZE>::rotateByQuaternion(Quaternion  & quaternion) {
+void Vector<SIZE>::rotateByQuaternion(Quaternion &quaternion) {
     Vector<SIZE> v(numbers);
     v = quaternion.getRotationMatrix() * v;
     for (int i = 0; i < SIZE; i++) {
@@ -163,20 +167,20 @@ Vector<SIZE> operator*=(const Vector<SIZE> &v, const int &w) {
 }
 
 template<int SIZE>
-Vector<SIZE> operator*(const int &w, const Vector<SIZE> &v) {
-    return v * w;
-}
-
-template<int SIZE>
-Vector<SIZE> operator*=(const int &w, const Vector<SIZE> &v) {
-    return v *= w;
-}
-
-template<int SIZE>
 Vector<SIZE> operator/(const Vector<SIZE> &v, const int &w) {
     Vector<SIZE> result;
     for (int i = 0; i < SIZE; i++) {
-        result[i] = v / w;
+        result[i] = v[i] / w;
+    }
+    return result;
+}
+
+template<int SIZE>
+Vector<SIZE> operator/=(const Vector<SIZE> &v, const int &w) {
+    Vector<SIZE> result;
+    for (int i = 0; i < SIZE; i++) {
+        result[i] = v[i];
+        result[i] /= w;
     }
     return result;
 }
@@ -191,18 +195,21 @@ double distanceBetweenTwoVectors(const Vector<SIZE> &v, const Vector<SIZE> &w) {
 }
 
 template<int SIZE>
+void Vector<SIZE>::translation(Vector<SIZE> translationVector) {
+    for (int i = 0; i < SIZE; i++) {
+        numbers[i] += translationVector[i];
+    }
+}
+
+
+template<int SIZE>
 std::ostream &operator<<(std::ostream &ost, const Vector<SIZE> &Vec) {
     ost << std::setprecision(STREAM_PRECISION) << std::fixed;
-    if (SIZE == 3) {
-        ost << Vec[0] << ",";
-        ost << Vec[2] << ",";
-        ost << Vec[1];
-        return ost;
-    }
 
-    for (int i = 0; i < SIZE; i++) {
-        ost << Vec[i] << " ";
+    for (int i = 0; i < SIZE - 1; i++) {
+        ost << Vec[i] << ",";
     }
+    ost << Vec[SIZE - 1];
     return ost;
 
 }
@@ -254,10 +261,9 @@ void Vector<SIZE>::rotateByEulerAngles(double angle_x, double angle_y, double an
     position = q_y * position * q_y.getConjugate();
     position = q_z * position * q_z.getConjugate();
 
-    numbers[0] = position.getX();
-    numbers[1] = position.getY();
-    numbers[2] = position.getZ();
+    numbers[0] = position[1];
+    numbers[1] = position[2];
+    numbers[2] = position[3];
 }
-
 
 #endif //ROTATIONS2D_VECTOR_H
