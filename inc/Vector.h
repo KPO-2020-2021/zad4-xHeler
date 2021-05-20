@@ -167,7 +167,7 @@ Vector<SIZE> operator*=(const Vector<SIZE> &v, const int &w) {
 }
 
 template<int SIZE>
-Vector<SIZE> operator/(const Vector<SIZE> &v, const int &w) {
+Vector<SIZE> operator/(const Vector<SIZE> &v, const double &w) {
     Vector<SIZE> result;
     for (int i = 0; i < SIZE; i++) {
         result[i] = v[i] / w;

@@ -1,13 +1,13 @@
 #ifndef ROTATION3D_POLYGON_H
 #define ROTATION3D_POLYGON_H
 
-#include "Plot.h"
+#include "GPlot.h"
 #include "Vector.h"
 
 const std::string COLOR = "#000000";
 const int DEFAULT_LENGHT = 30;
 const int AMOUT_OF_ANGLES = 4;
-extern Gnuplot plt;
+inline Gnuplot plt;
 
 template<int SIZE = AMOUT_OF_ANGLES>
 class Polygon {
@@ -164,6 +164,7 @@ void Polygon<SIZE>::draw() {
     if (id.empty()) {
         id = "P#" + std::to_string(plt.listOfObject.size() + 1);
     }
+
     std::stringstream tmp, command;
     tmp << "from " << points[0][0] << "," << points[0][2] << "," << points[0][1] << " to ";
     for (int i = 1; i < SIZE; ++i) {
