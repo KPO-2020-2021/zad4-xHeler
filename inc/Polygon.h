@@ -220,7 +220,6 @@ Polygon<SIZE>::Polygon(Vector<STANDARD_SIZE> v, Vector<STANDARD_SIZE> w, std::st
     points[2] = v + w;
     points[3] = w;
     colorRGB = color;
-    //TODO SPRAWDZIC
     double x = distanceBetweenTwoVectors(points[0], points[1]);
     double y = distanceBetweenTwoVectors(points[3], points[0]);
     double z = distanceBetweenTwoVectors(points[2], points[0]);

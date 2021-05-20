@@ -9,19 +9,19 @@ Scene::Scene() {
     translationTotal = Vector();
 }
 
-void Scene::setRotation() {//TODO NEED TEST!
+void Scene::setRotation() {
     char axis = ' ';
     double angel = 0;
 
     while (axis != '.') {
         std::cout << "Enter axis:";
-        if(!(std::cin >> axis)) { //!TODO TEST
+        if(!(std::cin >> axis)) {
             std::cout << "You must insert only one char and press enter!\n";
             throw std::invalid_argument("Input error! Must be char!");
         }
 
         std::cout << "Enter angle:";
-        if(!(std::cin >> angel)) { //!TODO TEST
+        if(!(std::cin >> angel)) {
             std::cout << "You must insert number!\n";
             throw std::invalid_argument("Input error! Must be number!");
         }
