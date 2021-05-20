@@ -1,22 +1,19 @@
-#include "Polygon.h"
+#include "Cuboid.h"
+
+void displayMenu();
 
 int main() {
-
-    Polygon<3> triangle(30, "#FF0000");
-    Polygon rectangle(30, "#DAA520");
-    Polygon<6> hexagon(30, "#006400");
-    Polygon<360> circle(30, "#87CEEB");
-
-    triangle.translation(80, 0, 0);
-    hexagon.translation(-80, 0, 0);
-    circle.translation(0, 50, 0);
-
-    triangle.draw();
-    rectangle.draw();
-    hexagon.draw();
-    circle.draw();
-
-    plt.initializePlot3D();
-
 }
+
+void displayMenu(){
+    std::cout << "\n r-rotate cuboid" << std::endl;
+    std::cout << " o-repeat previous rotation" << std::endl;
+    std::cout << " s-show rotation matrix" << std::endl;
+    std::cout << " t-translate cuboid" << std::endl;
+    std::cout << " d-display cuboid's vertices" << std::endl;
+    std::cout << " c-check length of cuboid's sides" << std::endl;
+    std::cout << " m-show menu" << std::endl;
+    std::cout << " q-quit" << std::endl;
+}
+
 
